@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -12,8 +13,45 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useState } from "react";
+import { signUp } from "@/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter()
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await signUp.email({
+        name,
+        email,
+        password,
+      });
+
+      if (result.error) {
+        setError(result.error.message ?? "Failed to sign up");
+      } else {
+        router.push("/dashboard")
+      }
+    } catch (error) {
+      setError("An unexpected error occurred ");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-white p-4">
       <Card className="w-full max-w-md border-gray-200 shadow-lg">
@@ -25,7 +63,7 @@ export default function SignUp() {
             Create an acoount to start tracking your job applications
           </CardDescription>
         </CardHeader>
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-gray-700">
@@ -35,6 +73,8 @@ export default function SignUp() {
                 id="name"
                 type="text"
                 placeholder="John Doe"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
                 className="border-gray-300 focus:border-primary focus:ring-primary"
               />
@@ -48,6 +88,8 @@ export default function SignUp() {
                 id="email"
                 type="email"
                 placeholder="john@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="border-gray-300 focus:border-primary focus:ring-primary"
               />
@@ -61,6 +103,8 @@ export default function SignUp() {
                 id="password"
                 type="password"
                 placeholder="John Doe"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 minLength={8}
                 required
                 className="border-gray-300 focus:border-primary focus:ring-primary"
