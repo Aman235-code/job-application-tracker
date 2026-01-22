@@ -1,6 +1,6 @@
 "use client";
 
-import { Board, Column } from "@/lib/models/models.types";
+import { Board, Column, JobApplication } from "@/lib/models/models.types";
 import {
   Award,
   Calendar,
@@ -18,6 +18,7 @@ import {
 import { Button } from "./ui/button";
 import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 import CreateJobApplicationDialogue from "./create-job-dialog";
+import JobApplicationCard from "./JobApplicationCard";
 
 interface KanbanBoardProps {
   board: Board;
@@ -56,11 +57,18 @@ function DroppableColumn({
   column,
   config,
   boardId,
+  sortedColumns
 }: {
   column: Column;
   config: ColConfig;
   boardId: string;
+  sortedColumns: Column[]
 }) {
+
+    const sortedJobs =
+    column.jobApplications?.sort((a, b) => a.order - b.order) || [];
+
+
   return (
     <Card className="min-w-75 shrink-0 shadow-md p-0">
       <CardHeader
@@ -96,14 +104,32 @@ function DroppableColumn({
       <CardContent
         className={`space-y-2 pt-4 bg-gray-50/50 min-h-100 rounded-b-lg `}
       >
+         {sortedJobs.map((job, key) => (
+            <SortableJobCard
+              key={key}
+              job={{ ...job, columnId: job.columnId || column._id }}
+              columns={sortedColumns}
+            />
+          ))}
+
         <CreateJobApplicationDialogue columnId={column._id} boardId={boardId}/>
       </CardContent>
     </Card>
   );
 }
 
+function SortableJobCard({job,columns}: {job: JobApplication; columns: Column[]}){
+  return <div>
+     <JobApplicationCard job={job} columns={columns}/>
+  </div>
+}
+
+
 export default function KanbanBoard({ board, userId }: KanbanBoardProps) {
   const columns = board.columns;
+
+    const sortedColumns =
+    columns?.sort((a, b) => a.order - b.order) || [];
   return (
     <>
       <div>
@@ -120,6 +146,7 @@ export default function KanbanBoard({ board, userId }: KanbanBoardProps) {
                 column={col}
                 config={config}
                 boardId={board._id}
+                sortedColumns={sortedColumns}
               />
             );
           })}
