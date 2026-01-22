@@ -6,18 +6,18 @@ import {
   Calendar,
   CheckCircle2,
   Mic,
-  MoreHorizontal,
   MoreVertical,
   Trash2,
   XCircle,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Button } from "./ui/button";
 import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
+import CreateJobApplicationDialogue from "./create-job-dialog";
 
 interface KanbanBoardProps {
   board: Board;
@@ -92,6 +92,12 @@ function DroppableColumn({
           </DropdownMenu>
         </div>
       </CardHeader>
+
+      <CardContent
+        className={`space-y-2 pt-4 bg-gray-50/50 min-h-100 rounded-b-lg `}
+      >
+        <CreateJobApplicationDialogue columnId={column._id} boardId={boardId}/>
+      </CardContent>
     </Card>
   );
 }
