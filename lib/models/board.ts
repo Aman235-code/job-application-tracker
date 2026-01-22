@@ -11,7 +11,7 @@ export interface IBoard extends Document {
 const BoardSchema = new Schema<IBoard>({
     name: {
         type: String,
-        required: true.
+        required: true,
     },
     userId: {
         type: String,
