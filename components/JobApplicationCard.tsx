@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { updateJobApplication } from "@/lib/actions/job-applications";
+import { deleteJobApplication, updateJobApplication } from "@/lib/actions/job-applications";
 import {
   Dialog,
   DialogContent,
@@ -65,17 +65,17 @@ export default function JobApplicationCard({
     }
   }
 
-  // async function handleDelete() {
-  //   try {
-  //     const result = await deleteJobApplication(job._id);
+  async function handleDelete() {
+    try {
+      const result = await deleteJobApplication(job._id);
 
-  //     if (result.error) {
-  //       console.error("Failed to delete job application:", result.error);
-  //     }
-  //   } catch (err) {
-  //     console.error("Failed to move job application: ", err);
-  //   }
-  // }
+      if (result.error) {
+        console.error("Failed to delete job application:", result.error);
+      }
+    } catch (err) {
+      console.error("Failed to move job application: ", err);
+    }
+  }
 
   async function handleMove(newColumnId: string) {
     try {
@@ -155,7 +155,7 @@ export default function JobApplicationCard({
                     </>
                   )}
 
-                  <DropdownMenuItem className="text-destructive">
+                  <DropdownMenuItem className="text-destructive" onClick={()=> handleDelete()}>
                     <Trash2 />
                     Delete
                   </DropdownMenuItem>
